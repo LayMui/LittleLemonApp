@@ -1,79 +1,60 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  Button,
-  Image,
-  Alert,
-} from 'react-native';
+import * as React from 'react';
+import { Alert, StyleSheet, Image, TextInput, Text, View } from 'react-native';
+import Button from '../components/Button';
+import { validateEmail } from '../utils/index';
+
 
 const SubscribeScreen = () => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = React.useState('');
 
-  const handleSubscribe = () => {
-    if (email.trim() === '') {
-      Alert.alert('Please enter a valid email address');
-    } else {
-      Alert.alert('Thank you for subscribing. Stay tuned!');
-      setEmail(''); // Clear the input after subscribing
-    }
-  };
-
-  return (
-    <View style={styles.container}>
-      <Image
-        style={styles.logo}
-        source={require('../assets/little-lemon-logo.png')}
-        resizeMode="contain"
-        accessible
-        accessibilityLabel="Little Lemon Logo"
-      />
-      <Text style={styles.label}>Enter your email to subscribe:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="email@example.com"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <View style={styles.buttonWrapper}>
-        <Button title="Subscribe" onPress={handleSubscribe} />
-      </View>
-    </View>
-  );
+  return <View style={styles.container}>
+    <Image
+      style={styles.logo}
+      source={require("../assets/little-lemon-logo-grey.png")}
+    />
+    <Text style={styles.title}>
+      Subscribe to our newsletter for our latest delicious recipes!
+    </Text>
+    <TextInput
+      style={styles.emailInput}
+      value={email}
+      onChangeText={setEmail}
+      keyboardType='email-address'
+      textContentType='emailAddress'
+      placeholder='Your email'
+    />
+    <Button
+      disabled={!validateEmail(email)}
+      onPress={() => Alert.alert("Thank you for subscribing!")}
+    >
+      Subscribe
+    </Button>
+  </View>;
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    padding: 25,
+    backgroundColor: 'white',
   },
-  logo: {
-    height: 100,
-    width: 300,
-    marginBottom: 30,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 10,
+  title: {
+    fontSize: 20,
     textAlign: 'center',
   },
-  input: {
-    width: '80%',
-    height: 40,
-    borderColor: '#999',
-    borderWidth: 1,
-    borderRadius: 6,
-    paddingHorizontal: 10,
-    marginBottom: 20,
+  logo: {
+    width: 100,
+    height: 200,
+    alignSelf: 'center',
+    resizeMode: 'contain',
   },
-  buttonWrapper: {
-    width: 200,
+  emailInput: {
+    fontSize: 16,
+    marginVertical: 20,
+    padding: 10,
+    height: 40,
+    borderRadius: 10,
+    borderWidth: 1,
   },
 });
 

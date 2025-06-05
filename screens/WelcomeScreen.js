@@ -1,71 +1,45 @@
-import {
-  ScrollView,
-  Image,
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  useColorScheme,
-  useWindowDimensions,
-} from 'react-native';
+import * as React from 'react';
+import { StyleSheet, Image, Text, View } from 'react-native';
+import Button from '../components/Button';
 
 const WelcomeScreen = ({ navigation }) => {
-  const colorScheme = useColorScheme();
-  const window = useWindowDimensions();
-
-  return (
-    <ScrollView
-      contentContainerStyle={[
-        styles.container,
-        {
-          backgroundColor: colorScheme === 'light' ? '#fff' : '#333333',
-        },
-      ]}
-    >
-      <View style={styles.centeredContent}>
-        <Image
-          style={styles.logo}
-          source={require('../assets/little-lemon-logo.png')}
-          resizeMode="contain"
-          accessible
-          accessibilityLabel="Little Lemon Logo"
-        />
-        <Text style={styles.regular}>
-          Little Lemon, your local Mediterranean Bistro
-        </Text>
-
-        <View style={styles.buttonWrapper}>
-          <Button
-            title="Newsletter"
-            onPress={() => navigation.navigate('Subscribe')}
-          />
-        </View>
-      </View>
-    </ScrollView>
-  );
+  return <View style={styles.container}>
+    <View style={styles.contentContainer}>
+      <Image
+        style={styles.logo}
+        source={require("../assets/little-lemon-logo.png")}
+      />
+      <Text style={styles.title}>
+        Little Lemon, your local Mediterranean Bistro
+      </Text>
+    </View>
+    <Button onPress={() => navigation.navigate('Subscribe')}>Newsletter</Button>
+  </View>;
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: 24,
+    flex: 1,
+    padding: 25,
+    backgroundColor: 'white',
+    justifyContent: 'space-between',
   },
-  centeredContent: {
+  contentContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 20,
   },
   logo: {
-    height: 100,
     width: 300,
+    height: 250,
+    resizeMode: 'contain',
   },
-  regular: {
-    fontSize: 18,
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
     textAlign: 'center',
-    marginTop: 30,
-  },
-  buttonWrapper: {
-    marginTop: 20,
-    width: 200,
+    marginTop: 40,
   },
 });
 
