@@ -5,6 +5,8 @@ import SubscribeScreen from "../screens/SubscribeScreen";
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
+
 
 const Drawer = createDrawerNavigator ();
 
@@ -21,6 +23,26 @@ const HamburgerButton = ({ navigation }) => (
   </TouchableOpacity>
 );
 
+const CustomDrawerContent = (props) => {
+  return (
+    <DrawerContentScrollView {...props}>
+      <DrawerItem
+        label="Welcome"
+        onPress={() => props.navigation.navigate('Welcome')}
+        testID="drawerItemWelcome"
+        accessibilityLabel="Navigate to Welcome screen"
+      />
+      <DrawerItem
+        label="Subscribe"
+        onPress={() => props.navigation.navigate('Subscribe')}
+        testID="drawerItemSubscribe"
+        accessibilityLabel="Navigate to Subscribe screen"
+      />
+    </DrawerContentScrollView>
+  );
+};
+
+
 const RootNavigator = () => {
   return (
   //   <Stack.Navigator initialRouteName="Welcome">
@@ -35,13 +57,23 @@ const RootNavigator = () => {
 
   
   <Drawer.Navigator
-      screenOptions={({ navigation }) => ({
-        headerLeft: () => <HamburgerButton navigation={navigation} />,
-      })}
-    >
-      <Drawer.Screen name="Welcome" component={WelcomeScreen} />
-      <Drawer.Screen name="Subscribe" component={SubscribeScreen} />
-    </Drawer.Navigator>
+  screenOptions={({ navigation }) => ({
+    headerLeft: () => <HamburgerButton navigation={navigation} />,
+  })}
+  drawerContent={(props) => <CustomDrawerContent {...props} />}
+>
+  <Drawer.Screen name="Welcome" component={WelcomeScreen} />
+  <Drawer.Screen name="Subscribe" component={SubscribeScreen} />
+</Drawer.Navigator>
+
+  // <Drawer.Navigator
+  //     screenOptions={({ navigation }) => ({
+  //       headerLeft: () => <HamburgerButton navigation={navigation} />,
+  //     })}
+  //   >
+  //     <Drawer.Screen name="Welcome" component={WelcomeScreen} />
+  //     <Drawer.Screen name="Subscribe" component={SubscribeScreen} />
+  //   </Drawer.Navigator>
 
 
   );
