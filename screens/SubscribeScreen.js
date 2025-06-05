@@ -16,8 +16,8 @@ const SubscribeScreen = () => {
     if (email.trim() === '') {
       Alert.alert('Please enter a valid email address');
     } else {
-      Alert.alert('Thanks for subscribing, ' + email + '!');
-      setEmail(''); // clear input after subscribing
+      Alert.alert('Thank you for subscribing. Stay tuned!');
+      setEmail(''); // Clear the input after subscribing
     }
   };
 
