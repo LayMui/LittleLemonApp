@@ -1,39 +1,12 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SectionList, Pressable } from 'react-native';
-
-const menuItemsToDisplay = [
-  {
-    title: 'Appetizers',
-    data: [
-      'Hummus',
-      'Moutabal',
-      'Falafel',
-      'Marinated Olives',
-      'Kofta',
-      'Eggplant Salad',
-    ],
-  },
-  {
-    title: 'Main Dishes',
-    data: ['Lentil Burger', 'Smoked Salmon', 'Kofta Burger', 'Turkish Kebab'],
-  },
-  {
-    title: 'Sides',
-    data: [
-      'Fries',
-      'Buttered Rice',
-      'Bread Sticks',
-      'Pita Pocket',
-      'Lentil Soup',
-      'Greek Salad',
-      'Rice Pilaf',
-    ],
-  },
-  {
-    title: 'Desserts',
-    data: ['Baklava', 'Tartufo', 'Tiramisu', 'Panna Cotta'],
-  },
-];
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  SectionList,
+  ActivityIndicator,
+} from 'react-native';
 
 const Separator = () => <View style={menuStyles.separator} />;
 
@@ -43,69 +16,123 @@ const Footer = () => (
   </Text>
 );
 
-const Item = ({ name }) => (
+const Item = ({ name, price }) => (
   <View style={menuStyles.innerContainer}>
     <Text style={menuStyles.itemText}>{name}</Text>
+    <Text style={menuStyles.itemText}>{`$${price}`}</Text>
   </View>
 );
 
 const MenuScreen = () => {
-  const [showMenu, setShowMenu] = useState(false);
+  const [isLoading, setLoading] = useState(true);
+  const [menuData, setMenuData] = useState([]);
 
-  const renderItem = ({ item }) => <Item name={item} />;
+  const groupByCategory = (items) => {
+    const grouped = items.reduce((acc, item) => {
+      const categoryTitle = item.category?.title || 'Uncategorized';
+      if (!acc[categoryTitle]) {
+        acc[categoryTitle] = [];
+      }
+      acc[categoryTitle].push({
+        title: item.title,
+        price: item.price,
+        id: item.id,
+      });
+      return acc;
+    }, {});
+  
+    // Convert to array of sections
+    return Object.entries(grouped).map(([title, data]) => ({
+      title,
+      data,
+    }));
+  };
 
-  const renderSectionHeader = ({ section: { title } }) => (
-    <Text style={menuStyles.sectionHeader}>{title} </Text>
+  
+  const getMenu = async () => {
+    try {
+      const response = await fetch(
+        'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu-items-by-category.json'
+      );
+      const json = await response.json();
+
+
+      console.log('Menu JSON:', json.menu);
+
+
+
+
+         // Group flat menu items by category for SectionList
+    const sections = groupByCategory(json.menu);
+
+    setMenuData(sections);
+
+    } catch (error) {
+      console.error('Failed to fetch menu:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getMenu();
+  }, []);
+
+  const renderItem = ({ item }) => (
+    <Item name={item.title} price={item.price} />
   );
+  const renderSectionHeader = ({ section }) => (
+    <Text style={menuStyles.sectionHeader}>{section.title}</Text>
+  );
+  
 
   return (
-    <View style={menuStyles.container}>
-      {!showMenu && (
-        <Text style={menuStyles.infoSection}>
-          Little Lemon is a charming neighborhood bistro that serves simple food
-          and classic cocktails in a lively but casual environment. View our
-          menu to explore our cuisine with daily specials!
-        </Text>
-      )}
-      <Pressable
-        style={menuStyles.button}
-        onPress={() => setShowMenu(prevState => !prevState)}>
-        <Text style={menuStyles.buttonText}>
-          {showMenu ? 'Home' : 'View Menu'}
-        </Text>
-      </Pressable>
-      {showMenu && (
+    <SafeAreaView style={menuStyles.container}>
+      <Text style={menuStyles.headerText}>Little Lemon</Text>
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#495E57" />
+      ) : (
         <SectionList
-          keyExtractor={(item, index) => item + index}
-          sections={menuItemsToDisplay}
+          keyExtractor={(item, index) => item.title + index}
+          sections={menuData}
           renderItem={renderItem}
           renderSectionHeader={renderSectionHeader}
           ListFooterComponent={Footer}
-          ItemSeparatorComponent={Separator}></SectionList>
+          ItemSeparatorComponent={Separator}
+        />
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
 const menuStyles = StyleSheet.create({
   container: {
-    flex: 0.95,
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  headerText: {
+    color: '#495E57',
+    fontSize: 30,
+    textAlign: 'center',
+    paddingVertical: 16,
   },
   innerContainer: {
-    paddingHorizontal: 40,
-    paddingVertical: 20,
+    flexDirection: 'row',      // arrange children horizontally
+    justifyContent: 'space-between', // push name to left, price to right
+    paddingHorizontal: 20,
+    paddingVertical: 12,
     backgroundColor: '#333333',
+  },
+  itemText: {
+    color: '#F4CE14',
+    fontSize: 18,
   },
   sectionHeader: {
     backgroundColor: '#fbdabb',
     color: '#333333',
-    fontSize: 34,
-    flexWrap: 'wrap',
-    textAlign: 'center',
-  },
-  itemText: {
-    color: '#F4CE14',
-    fontSize: 32,
+    fontSize: 22,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   separator: {
     borderBottomWidth: 1,
@@ -113,35 +140,11 @@ const menuStyles = StyleSheet.create({
   },
   footerText: {
     color: '#EDEFEE',
-    fontSize: 20,
-    flexWrap: 'wrap',
+    fontSize: 16,
     textAlign: 'center',
-  },
-  button: {
-    fontSize: 22,
-    padding: 10,
-    marginVertical: 8,
-    margin: 40,
-    backgroundColor: '#EDEFEE',
-    borderColor: '#EDEFEE',
-    borderWidth: 2,
-    borderRadius: 12
-  },
-  buttonText: {
-    color: '#333333',
-    textAlign: 'center',
-    fontSize: 32,
-  },
-  infoSection: {
-    fontSize: 24,
-    padding: 20,
-    marginVertical: 8,
-    color: '#EDEFEE',
-    textAlign: 'center',
+    paddingVertical: 20,
     backgroundColor: '#495E57',
   },
 });
 
 export default MenuScreen;
-
-

@@ -4,7 +4,9 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "reset-ios-only": "watchman watch-del-all",
+    "clear-cache": "rm -rf .expo && rm -rf .expo-shared"
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
