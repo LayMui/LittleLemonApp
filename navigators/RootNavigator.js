@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import SubscribeScreen from "../screens/SubscribeScreen";
 import MenuScreen from "../screens/MenuScreen";
+import SettingScreen from "../screens/SettingScreen";
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -45,6 +46,12 @@ const CustomDrawerContent = (props) => {
         testID="drawerItemSubscribe"
         accessibilityLabel="Navigate to Menu screen"
       />
+         <DrawerItem
+        label="Setting"
+        onPress={() => props.navigation.navigate('Setting')}
+        testID="drawerItemSetting"
+        accessibilityLabel="Navigate to Setting screen"
+      />
     </DrawerContentScrollView>
   );
 };
@@ -72,6 +79,7 @@ const RootNavigator = () => {
   <Drawer.Screen name="Welcome" component={WelcomeScreen} />
   <Drawer.Screen name="Subscribe" component={SubscribeScreen} />
   <Drawer.Screen name="Menu" component={MenuScreen} />
+  <Drawer.Screen name="Setting" component={SettingScreen} />
 </Drawer.Navigator>
 
   // <Drawer.Navigator
