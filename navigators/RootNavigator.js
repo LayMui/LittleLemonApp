@@ -5,6 +5,7 @@ import SubscribeScreen from "../screens/SubscribeScreen";
 import MenuScreen from "../screens/MenuScreen";
 import SettingScreen from "../screens/SettingScreen";
 import CustomerScreen from "../screens/CustomerScreen";
+import FilterSortMenuScreen from "../screens/FilterSortMenuScreen";
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,7 +14,7 @@ import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 
 const Drawer = createDrawerNavigator ();
 
-const Stack = createNativeStackNavigator();
+//const Stack = createNativeStackNavigator();
 const HamburgerButton = ({ navigation }) => (
   <TouchableOpacity
     onPress={() => navigation.toggleDrawer()}
@@ -46,6 +47,12 @@ const CustomDrawerContent = (props) => {
         onPress={() => props.navigation.navigate('Menu')}
         testID="drawerItemSubscribe"
         accessibilityLabel="Navigate to Menu screen"
+      />
+         <DrawerItem
+        label="FilterSortMenu"
+        onPress={() => props.navigation.navigate('FilterSortMenu')}
+        testID="drawerItemFilterSortMenu"
+        accessibilityLabel="Navigate to Filter Sort Menu screen"
       />
          <DrawerItem
         label="Customer"
@@ -88,6 +95,7 @@ const RootNavigator = () => {
   <Drawer.Screen name="Subscribe" component={SubscribeScreen} />
   <Drawer.Screen name="Menu" component={MenuScreen} />
   <Drawer.Screen name="Customer" component={CustomerScreen} />
+  <Drawer.Screen name="FilterSortMenu" component={FilterSortMenuScreen} />
   <Drawer.Screen name="Setting" component={SettingScreen} />
 </Drawer.Navigator>
 
