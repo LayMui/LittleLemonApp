@@ -38,14 +38,40 @@ export default function FilterSortMenuScreen() {
     sections.map(() => false)
   );
 
-  const fetchData = async() => {
-    // 1. Implement this function
+  // const fetchData = async() => {
+  //   // 1. Implement this function
     
-    // Fetch the menu from the API_URL endpoint. You can visit the API_URL in your browser to inspect the data returned
-    // The category field comes as an object with a property called "title". You just need to get the title value and set it under the key "category".
-    // So the server response should be slighly transformed in this function (hint: map function) to flatten out each menu item in the array,
-    return [];
-  }
+  //   // Fetch the menu from the API_URL endpoint. You can visit the API_URL in your browser to inspect the data returned
+  //   // The category field comes as an object with a property called "title". You just need to get the title value and set it under the key "category".
+  //   // So the server response should be slighly transformed in this function (hint: map function) to flatten out each menu item in the array,
+  //   return [];
+  // }
+  const fetchData = async () => {
+    try {
+      const response = await fetch(API_URL);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Transform the data to flatten the category object
+      const transformedData = data.menu.map(item => ({
+        ...item,
+        category: item.category.title // Extract title from category object
+      }));
+      
+      // Debug: Log the transformed data to verify beverages are included
+      console.log('Fetched data:', transformedData);
+      console.log('Categories found:', [...new Set(transformedData.map(item => item.category))]);
+      
+      return transformedData;
+    } catch (error) {
+      console.error('Error fetching menu data:', error);
+      throw new Error('Failed to fetch menu data');
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -58,9 +84,24 @@ export default function FilterSortMenuScreen() {
         // After that, every application restart loads the menu from the database
         if (!menuItems.length) {
           const menuItems = await fetchData();
-          saveMenuItems(menuItems);
-        }
+          await saveMenuItems(menuItems);
 
+           // Debug: Check after saving by re-fetching
+        const savedItems = await getMenuItems();
+        console.log('📊 Items retrieved from database:', savedItems.length);
+        
+        const savedBeverages = savedItems.filter(item => item.category === 'Beverages');
+        console.log('🥤 Beverages in database:', savedBeverages.length, savedBeverages.map(b => b.title));
+        
+        menuItems = savedItems; // Use the saved items
+      } else {
+        console.log('📊 Menu items loaded from database:', menuItems.length);
+        const beverages = menuItems.filter(item => item.category === 'Beverages');
+        console.log('🥤 Beverages from database:', beverages.length, beverages.map(b => b.title));
+      }
+        
+
+        
         const sectionListData = getSectionListData(menuItems);
         setData(sectionListData);
       } catch (e) {
