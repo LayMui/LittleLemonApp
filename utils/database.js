@@ -70,7 +70,21 @@ export async function filterByQueryAndCategories(query, activeCategories) {
       AND category IN (${placeholders});
     `;
 
+ 
     const params = [queryLower, ...activeCategories];
+
+        // Escape and interpolate params into SQL for logging
+        const escapeForSql = (val) => {
+          if (val === null) return 'NULL';
+          if (typeof val === 'number') return val;
+          if (typeof val === 'string') return `'${val.replace(/'/g, "''")}'`;
+          throw new Error(`Unsupported param type: ${typeof val}`);
+        };
+    
+        let paramIndex = 0;
+        const interpolatedSql = sql.replace(/\?/g, () => escapeForSql(params[paramIndex++]));
+    
+        console.log('Executing SQL:\n' + interpolatedSql);
 
     db.transaction((tx) => {
       tx.executeSql(
