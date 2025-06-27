@@ -17,7 +17,7 @@ import {
   filterByQueryAndCategories,
 } from '../utils/database';
 import Filters from '../utils/filters';
-import { getSectionListData, useUpdateEffect } from '../utils/utils';
+import { getSectionListData, useUpdateEffect } from '../utils';
 
 const API_URL =
   'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu-items-by-category.json';

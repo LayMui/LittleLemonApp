@@ -1,7 +1,7 @@
-import * as SQLite from 'expo-sqlite';
-import { SECTION_LIST_MOCK_DATA } from './utils';
+import SQLite from 'react-native-sqlite-2';
 
-const db = SQLite.openDatabase('little_lemon');
+
+const db = SQLite.openDatabase('little_lemon.db', '1.0', '', 1);
 
 // Create menuitems table if it doesn't exist
 export async function createTable() {
